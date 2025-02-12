@@ -1,0 +1,228 @@
+
+<template>
+    <div class="container">
+      <el-row>
+        <!-- Left side: Form -->
+        <el-col :span="12">
+          <el-form :model="form" label-width="200px">
+            <!-- Model Parameters Section -->
+            <el-form-item label="ONNX Model">
+              <el-input v-model="form.onnx_model" placeholder="/data/horizon_x5/data/"></el-input>
+            </el-form-item>
+  
+            <el-form-item label="march">
+              <el-select v-model="form.march" placeholder="Select" :default-value="'bayes-e'">
+                <el-option label="bayes-e" value="bayes-e"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="layer_out_dump">
+              <el-select v-model="form.layer_out_dump" placeholder="Select">
+                <el-option label="False" value="False"></el-option>
+                <el-option label="True" value="True"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Output Model File Prefix">
+              <el-input v-model="form.output_model_file_prefix" placeholder="Enter prefix"></el-input>
+            </el-form-item>
+  
+            <!-- Input Parameters Section -->
+            <el-form-item label="Input Name">
+              <el-input v-model="form.input_name" placeholder="Enter input name"></el-input>
+            </el-form-item>
+  
+            <el-form-item label="Input Type (Runtime)">
+              <el-select v-model="form.input_type_rt" placeholder="Select">
+                <el-option label="nv12" value="nv12"></el-option>
+                <el-option label="rgb" value="rgb"></el-option>
+                <el-option label="bgr" value="bgr"></el-option>
+                <el-option label="yuv444" value="yuv444"></el-option>
+                <el-option label="gray" value="gray"></el-option>
+                <el-option label="featuremap" value="featuremap"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Input Layout (Runtime)">
+              <el-select v-model="form.input_layout_rt" placeholder="Select">
+                <el-option label="NCHW" value="NCHW"></el-option>
+                <el-option label="NHWC" value="NHWC"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Input Type (Training)">
+              <el-select v-model="form.input_type_train" placeholder="Select">
+                <el-option label="rgb" value="rgb"></el-option>
+                <el-option label="bgr" value="bgr"></el-option>
+                <el-option label="gray" value="gray"></el-option>
+                <el-option label="featuremap" value="featuremap"></el-option>
+                <el-option label="yuv444" value="yuv444"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Input Layout (Training)">
+              <el-select v-model="form.input_layout_train" placeholder="Select">
+                <el-option label="NCHW" value="NCHW"></el-option>
+                <el-option label="NHWC" value="NHWC"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Input Shape">
+              <el-input v-model="form.input_shape" placeholder="Enter input shape"></el-input>
+            </el-form-item>
+  
+            <el-form-item label="Norm Type">
+              <el-input v-model="form.norm_type" placeholder="Enter norm type"></el-input>
+            </el-form-item>
+  
+            <el-form-item label="Preprocessing Type">
+              <el-select v-model="form.norm_type" placeholder="Select preprocessing type">
+                <el-option label="no_preprocess" value="no_preprocess"></el-option>
+                <el-option label="data_mean" value="data_mean"></el-option>
+                <el-option label="data_scale" value="data_scale"></el-option>
+                <el-option label="data_mean_and_scale" value="data_mean_and_scale"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item v-if="form.norm_type === 'data_mean' || form.norm_type === 'data_mean_and_scale'" label="Mean Value">
+              <el-input v-model="form.mean_value" placeholder="Enter mean value"></el-input>
+            </el-form-item>
+  
+            <el-form-item v-if="form.norm_type === 'data_scale' || form.norm_type === 'data_mean_and_scale'" label="Scale Value">
+              <el-input v-model="form.scale_value" placeholder="Enter scale value"></el-input>
+            </el-form-item>
+  
+            <!-- Calibration Parameters Section -->
+            <el-form-item label="Calibration Data Directory">
+              <el-input v-model="form.cal_data_dir" placeholder="Enter directory path"></el-input>
+            </el-form-item>
+  
+            <el-form-item label="Calibration Data Type">
+              <el-select v-model="form.cal_data_type" placeholder="Select">
+                <el-option label="float32" value="float32"></el-option>
+                <el-option label="uint8" value="uint8"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Calibration Type">
+              <el-select v-model="form.calibration_type" placeholder="Select">
+                <el-option label="default" value="default"></el-option>
+                <el-option label="mix" value="mix"></el-option>
+                <el-option label="kl" value="kl"></el-option>
+                <el-option label="max" value="max"></el-option>
+                <el-option label="load" value="load"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <!-- Compiler Parameters Section -->
+            <el-form-item label="Compile Mode">
+              <el-select v-model="form.compile_mode" placeholder="Select">
+                <el-option label="bandwidth" value="bandwidth"></el-option>
+                <el-option label="latency" value="latency"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Debug">
+              <el-select v-model="form.debug" placeholder="Select">
+                <el-option label="True" value="True"></el-option>
+                <el-option label="False" value="False"></el-option>
+              </el-select>
+            </el-form-item>
+  
+            <el-form-item label="Optimization Level">
+              <el-select v-model="form.optimize_level" placeholder="Select">
+                <el-option label="O0" value="O0"></el-option>
+                <el-option label="O1" value="O1"></el-option>
+                <el-option label="O2" value="O2"></el-option>
+                <el-option label="O3" value="O3"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </el-col>
+  
+        <!-- Right side: YAML Display -->
+        <el-col :span="12">
+          <el-card>
+            <div class="yaml-display">
+              <pre>{{ generateYaml() }}</pre>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        form: {
+          onnx_model: "/data/horizon_x5/data/",
+          march: "bayes-e",
+          layer_out_dump: "False",
+          output_model_file_prefix: "Fruit",
+          input_name: "",
+          input_type_rt: "nv12",
+          input_layout_rt: "NCHW",
+          input_type_train: "rgb",
+          input_layout_train: "NCHW",
+          input_shape: "",
+          norm_type: "data_scale",
+          mean_value: "127 127 127",
+          scale_value: "255 255 255",
+          cal_data_dir: "./calibration_data_rgb_f32",
+          cal_data_type: "float32",
+          calibration_type: "default",
+          compile_mode: "latency",
+          debug: "True",
+          optimize_level: "O2",
+        },
+      };
+    },
+    methods: {
+      generateYaml() {
+        return `model_parameters:
+    onnx_model: '${this.form.onnx_model}'
+    march: '${this.form.march}'
+    layer_out_dump: ${this.form.layer_out_dump}
+    output_model_file_prefix: '${this.form.output_model_file_prefix}'
+  
+  input_parameters:
+    input_name: '${this.form.input_name}'
+    input_type_rt: '${this.form.input_type_rt}'
+    input_layout_rt: '${this.form.input_layout_rt}'
+    input_type_train: '${this.form.input_type_train}'
+    input_layout_train: '${this.form.input_layout_train}'
+    input_shape: '${this.form.input_shape}'
+    norm_type: '${this.form.norm_type}'
+    ${this.form.norm_type === 'data_mean' || this.form.norm_type === 'data_mean_and_scale' ? `mean_value: '${this.form.mean_value}'` : ''}
+    ${this.form.norm_type === 'data_scale' || this.form.norm_type === 'data_mean_and_scale' ? `scale_value: '${this.form.scale_value}'` : ''}
+  
+  calibration_parameters:
+    cal_data_dir: '${this.form.cal_data_dir}'
+    cal_data_type: '${this.form.cal_data_type}'
+    calibration_type: '${this.form.calibration_type}'
+  
+  compiler_parameters:
+    compile_mode: '${this.form.compile_mode}'
+    debug: ${this.form.debug}
+    optimize_level: '${this.form.optimize_level}'`;
+      },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .yaml-display {
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  </style>
+  
